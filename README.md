@@ -20,7 +20,7 @@ of 200K questions that's about 10 years old now. You can find it with a quick Go
 search.
 
 The file needs to be added to the data folder and named jeopardy.json. The format is
-like this. So you can also ask an Gemini/ChatGPT/etc to generate some questions in this
+like this. So you can also ask Gemini/ChatGPT/etc to generate some questions in this
 format as well.
 
 ```
