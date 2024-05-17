@@ -1,0 +1,2 @@
+mesop==0.5.6
+google-generativeai
