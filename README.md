@@ -39,11 +39,11 @@ format as well.
 
 Here are some screenshots of the UI.
 
-## Jeopardy board
+### Jeopardy board
 
 <img width="1312" alt="Jeopardy" src="https://github.com/richard-to/mesop-jeopardy/assets/539889/bc27447d-129f-47ae-b0b1-8f5c546762ed">
 
-## Jeopardy answer
+### Jeopardy answer
 
 <img width="1312" alt="Jeopardy Answer Modal" src="https://github.com/richard-to/mesop-jeopardy/assets/539889/46bbe312-8cf3-4ff7-8271-49692bd75dec">
 
