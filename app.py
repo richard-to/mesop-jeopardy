@@ -1,3 +1,4 @@
+from dataclasses import field
 import random
 import time
 
@@ -16,7 +17,9 @@ class State:
   selected_clue: str
   # We use a dict since dataclasses do not seem to be deserialized back to a dict.
   # This may be due to the use of the nested list.
-  board: list[list[dict[str, str|int]]]
+  board: list[list[dict[str, str | int]]] = field(
+    default_factory=lambda: make_default_board(_JEOPARDY_QUESTIONS)
+  )
   # Used for clearing the text input.
   response_value: str
   response: str
@@ -34,8 +37,6 @@ class State:
 @me.page(path="/", title="Mesop Jeopardy")
 def app():
   state = me.state(State)
-  if not state.board:
-    state.board = make_default_board(_JEOPARDY_QUESTIONS)
 
   # Modal is displayed to notify when the user is correct or not.
   with modal(state.modal_open):
@@ -44,7 +45,6 @@ def app():
       with me.box(on_click=on_click_close_modal):
         me.icon("close")
     me.text(state.answer_check_response)
-
 
   with me.box(style=css.MAIN_COL_GRID):
     with me.box(style=css.BOARD_COL_GRID):
@@ -167,7 +167,7 @@ def on_click_submit(e: me.ClickEvent):
   yield
 
 
-def on_click_close_modal(e : me.ClickEvent):
+def on_click_close_modal(e: me.ClickEvent):
   """Allows modal to be closed by clicking on the modal background."""
   state = me.state(State)
   if state.modal_open:
