@@ -4,7 +4,7 @@ import re
 from collections import defaultdict
 
 
-QuestionSet = list[dict[str,str]]
+QuestionSet = list[dict[str, str]]
 
 
 _JEOPARDY_DATA = "data/jeopardy.json"
@@ -47,6 +47,7 @@ def _add_raw_value(data: QuestionSet) -> QuestionSet:
   for row in data:
     row["raw_value"] = _convert_dollar_amount(row["value"])
   return data
+
 
 def _clean_questions(data: QuestionSet) -> QuestionSet:
   """Clean up questions

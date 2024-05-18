@@ -3,7 +3,7 @@ import os
 import google.generativeai as genai
 
 
-GOOGLE_API_KEY=os.getenv('GOOGLE_API_KEY')
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel('gemini-pro')
@@ -25,7 +25,8 @@ Or "No. That is incorrect. " if the response is incorrect.
 Afterwards, elaborate on why.
 """
 
-def check_answer(clue: str, answer: str, response: str) -> list[bool,str]:
+
+def check_answer(clue: str, answer: str, response: str) -> list[bool, str]:
   """Checks if the given answer is correct.
 
   Args:

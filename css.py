@@ -119,7 +119,7 @@ def clue_box(is_selectable: bool) -> me.Style:
   Args:
     is_selectable: Visual signify if the clue is selectable.
   """
-  return  me.Style(
+  return me.Style(
     background=COLOR_BLUE,
     color=COLOR_YELLOW,
     cursor="pointer" if is_selectable else "default",
