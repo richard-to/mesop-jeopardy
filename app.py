@@ -176,7 +176,7 @@ def on_click_close_modal(e: me.ClickEvent):
 
 @me.content_component
 def modal(modal_open: bool):
-  """Basic modal box compnent."""
+  """Basic modal box component."""
   with me.box(style=css.modal_background(modal_open)):
     with me.box(style=css.MODAL_GRID):
       with me.box(style=css.MODAL_CONTAINER):
