@@ -19,7 +19,7 @@ def load() -> list[QuestionSet]:
   question_sets = _group_into_question_sets(data)
   question_sets = _sort_question_sets(question_sets)
   question_sets = _normalize_values(question_sets)
-  return _filter_out_final_jeopardy_question_sets(question_sets)
+  return _filter_out_incomplete_question_sets(question_sets)
 
 
 def _load_raw_data() -> QuestionSet:
@@ -119,11 +119,14 @@ def _normalize_values(question_sets: list[QuestionSet]) -> list[QuestionSet]:
   return question_sets
 
 
-def _filter_out_final_jeopardy_question_sets(question_sets: list[QuestionSet]) -> list[QuestionSet]:
-  """Filters out questions set for Final Jeopardy.
+def _filter_out_incomplete_question_sets(question_sets: list[QuestionSet]) -> list[QuestionSet]:
+  """Filters out question sets that are incomplete (do not contain five questions).
 
   Final Jeopardy categories only have one question so we want to ignore those.
   We also want to avoid anomalies in the data set.
+
+  In addition there are cases where not all questions were answered for a category. This
+  means that we will be missing a question on the board.
   """
   return [
     question_set for question_set in question_sets
