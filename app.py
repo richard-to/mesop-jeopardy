@@ -67,7 +67,7 @@ def app():
             elif key == state.selected_question_key:
               me.text(cell["question"], style=me.Style(text_align="left"))
             else:
-              me.text(f"${cell["normalized_value"]}", style=me.Style(font_size="2.2vw"))
+              me.text(f"${cell['normalized_value']}", style=me.Style(font_size="2.2vw"))
 
     # Sidebar
     with me.box(style=css.SIDEBAR):
