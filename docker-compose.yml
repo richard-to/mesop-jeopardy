@@ -1,5 +1,5 @@
 services:
-  mesop:
+  mesop-jeopardy:
     build: .
     ports:
       - "8080:8080"
