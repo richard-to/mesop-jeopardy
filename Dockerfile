@@ -31,4 +31,4 @@ COPY . /srv/mesop-jeopardy
 WORKDIR /srv/mesop-jeopardy
 
 # Run Mesop through gunicorn. Should be available at localhost:8080
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:me"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "main:me"]

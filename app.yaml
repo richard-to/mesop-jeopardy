@@ -1,7 +1,7 @@
 # App Engine Flex deployment
 runtime: python
 env: flex
-entrypoint: gunicorn -b :$PORT app:me
+entrypoint: gunicorn -b :$PORT main:me
 
 runtime_config:
   operating_system: ubuntu22

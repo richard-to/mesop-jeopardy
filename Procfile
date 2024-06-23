@@ -1,2 +1,2 @@
 # Cloud Run deployment
-web: gunicorn --bind :8080 app:me
+web: gunicorn --bind :8080 main:me
