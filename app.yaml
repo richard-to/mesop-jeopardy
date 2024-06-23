@@ -1,0 +1,19 @@
+# App Engine Flex deployment
+runtime: python
+env: flex
+entrypoint: gunicorn -b :$PORT app:me
+
+runtime_config:
+  operating_system: ubuntu22
+  runtime_version: "3.10"
+
+manual_scaling:
+  instances: 1
+
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10
+
+env_variables:
+  GOOGLE_API_KEY: YOUR-API-KEY

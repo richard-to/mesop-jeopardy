@@ -1,3 +1,4 @@
-mesop==0.9.1
+mesop
+
 google-generativeai
 gunicorn==22.0.0
