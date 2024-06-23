@@ -45,7 +45,7 @@ that you have a Google API Key to make Gemini API calls.
 
 ### Docker
 
-This section shows how to run the Jeopardy app from a Docker image.
+This section shows how to run Mesop Jeopardy from a Docker image.
 
 #### Step 0 - Install Docker
 
@@ -53,7 +53,7 @@ Make sure [Docker and Docker Compose are installed](https://docs.docker.com/engi
 
 #### Step 2 - Add Google API key
 
-In the `docker-compose.yml` set the Google API Key
+In the `docker-compose.yml` set the Google API Key.
 
 ```
 environment:
@@ -70,11 +70,11 @@ docker-compose up -d
 
 #### Step 4 - View the app
 
-The app should now be viewable at localhost:8080
+The app should now be viewable at localhost:8080.
 
 ### App Engine
 
-Mesop Jeopardy can be run on App Engine Flexible.
+This section describes how to deploy Mesop Jeopardy with App Engine Flexible.
 
 #### Step 0 - GCP setup
 
@@ -93,7 +93,7 @@ gcloud components install app-engine-python
 
 #### Step 2 - Add Google API key
 
-Set your Google API key in `app.yaml`
+Set your Google API key in `app.yaml`.
 
 ```
 env_variables:
@@ -117,7 +117,7 @@ gcloud app browse
 
 ### Cloud Run
 
-Mesop Jeopardy can be run on Cloud Run.
+This section describes how to deploy Mesop Jeopardy with Cloud Run.
 
 #### Step 0 - GCP setup
 
@@ -129,8 +129,7 @@ https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-python-ser
 
 #### Step 1 - Deploy
 
-Run this command in the repository working directory. You will need to answer some
-prompts.
+Run this command in the repository working directory.
 
 ```
 gcloud run deploy mesop-jeopardy \
