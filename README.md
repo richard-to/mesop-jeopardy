@@ -102,8 +102,7 @@ env_variables:
 
 #### Step 3 - Deploy
 
-Run this command in the repository working directory. You will need to answer some
-prompts.
+Run this command in the repository working directory.
 
 ```
 gcloud app deploy
