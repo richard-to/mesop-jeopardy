@@ -1,3 +1,12 @@
+---
+title: Mesop Jeopardy
+emoji: 🤓
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_port: 7860
+---
+
 # Mesop Jeopardy
 
 Simple jeopardy game built using [Mesop](https://google.github.io/mesop/). User answers are
