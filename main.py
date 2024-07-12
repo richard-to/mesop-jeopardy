@@ -113,11 +113,11 @@ def app():
           label="Enter your response",
           value=state.response_value,
           disabled=not bool(state.selected_question_key),
-          on_input=on_input_response,
+          on_blur=on_input_response,
           style=css.RESPONSE_INPUT,
         )
 
-        disabled = not bool(state.selected_question_key) or not bool(state.response)
+        disabled = not bool(state.selected_question_key)
         me.button(
           label="Submit your response",
           type="flat",
@@ -141,7 +141,7 @@ def on_click_cell(e: me.ClickEvent):
   state.selected_question_key = e.key
 
 
-def on_input_response(e: me.InputEvent):
+def on_input_response(e: me.InputBlurEvent):
   """Stores user input into state, so we can process their response."""
   state = me.state(State)
   state.response = e.value
@@ -150,6 +150,9 @@ def on_input_response(e: me.InputEvent):
 def on_click_submit(e: me.ClickEvent):
   """Submit user response to clue to check if they are correct."""
   state = me.state(State)
+  if not state.response.strip():
+    return
+
   selected_question = get_selected_question(state.board, state.selected_question_key)
 
   # Check and score answer.
