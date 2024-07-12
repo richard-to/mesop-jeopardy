@@ -1,7 +1,8 @@
 import json
 import re
-
 from collections import defaultdict
+
+import trebek_bot
 
 
 QuestionSet = list[dict[str, str]]
@@ -11,9 +12,17 @@ _JEOPARDY_DATA = "data/jeopardy.json"
 _NUM_QUESTIONS_PER_CATEGORY = 5
 
 
-def load() -> list[QuestionSet]:
-  """Loads a cleaned up data set to use in Mesop Jeopardy game."""
-  data = _load_raw_data()
+def load(use_gemini: bool = False) -> list[QuestionSet]:
+  """Loads a cleaned up data set to use in Mesop Jeopardy game.
+
+  Args:
+    use_gemini: If enabled, use Gemini to generate questions instead of an existing
+                data set.
+  """
+  if use_gemini:
+    data = trebek_bot.generate_questions()
+  else:
+    data = _load_raw_data()
   data = _add_raw_value(data)
   data = _clean_questions(data)
   question_sets = _group_into_question_sets(data)

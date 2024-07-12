@@ -5,6 +5,15 @@ COLOR_YELLOW = "#f0cd6e"
 COLOR_RED = "#cc153c"
 COLOR_DISABLED_BG = "#ccc"
 
+LOADING_PAGE = me.Style(
+  background=COLOR_BLUE,
+  color=COLOR_YELLOW,
+  display="flex",
+  align_items="center",
+  justify_content="center",
+  height="100vh"
+)
+
 MAIN_COL_GRID = me.Style(
   background="#ececec",
   display="grid",

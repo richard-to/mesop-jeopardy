@@ -20,8 +20,7 @@ of 200K questions that's about 10 years old now. You can find it with a quick Go
 search.
 
 The file needs to be added to the data folder and named jeopardy.json. The format is
-like this. So you can also ask Gemini/ChatGPT/etc to generate some questions in this
-format as well.
+like this
 
 ```
 {
@@ -34,6 +33,9 @@ format as well.
   "show_number": "4680"
 }
 ```
+
+If you do not want to use the existing Jeopardy data set, you can set the environment
+variable `GENERATE_JEOPARDY_QUESTIONS=True` to generate the questions from Gemini.
 
 ## Deployment
 

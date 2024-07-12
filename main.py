@@ -1,7 +1,6 @@
-from dataclasses import field
+import os
 import random
 import time
-
 import css
 import trebek_bot
 import question_bank
@@ -9,7 +8,6 @@ import mesop as me
 
 
 _NUM_CATEGORIES = 6
-_JEOPARDY_QUESTIONS = question_bank.load()
 
 
 @me.stateclass
@@ -17,9 +15,7 @@ class State:
   selected_clue: str
   # We use a dict since dataclasses do not seem to be deserialized back to a dict.
   # This may be due to the use of the nested list.
-  board: list[list[dict[str, str | int]]] = field(
-    default_factory=lambda: make_default_board(_JEOPARDY_QUESTIONS)
-  )
+  board: list[list[dict[str, str | int]]]
   # Used for clearing the text input.
   response_value: str
   response: str
@@ -32,11 +28,33 @@ class State:
   # Key format: click-{row_index}-{col_index}
   answered_questions: dict[str, bool]
   modal_open: bool = False
+  # App is loading
+  loading: bool = True
 
 
-@me.page(path="/", title="Mesop Jeopardy")
+def on_load(e: me.LoadEvent):
+  """Generating the questions from Gemini takes some time, so add a loading screen."""
+  state = me.state(State)
+  state.loading = True
+  yield
+  state.board = make_default_board(question_bank.load(
+    use_gemini=os.environ.get("GENERATE_JEOPARDY_QUESTIONS", "False") == "True"
+  ))
+  state.loading = False
+  yield
+
+
+@me.page(path="/", title="Mesop Jeopardy", on_load=on_load)
 def app():
   state = me.state(State)
+  if state.loading:
+    with me.box(style=css.LOADING_PAGE):
+        me.progress_spinner()
+        me.text(
+          "Generating Jeopardy questions...",
+          style=me.Style(font_size=20, font_weight="bold", margin=me.Margin(left=10))
+        )
+    return
 
   # Modal is displayed to notify when the user is correct or not.
   with modal(state.modal_open):
@@ -186,7 +204,8 @@ def modal(modal_open: bool):
 
 def make_default_board(jeopardy_questions) -> list[list[dict[str, str]]]:
   """Creates a board with some random jeopardy questions."""
-  return random.choices(jeopardy_questions, k=_NUM_CATEGORIES)
+  random.shuffle(jeopardy_questions)
+  return jeopardy_questions[:_NUM_CATEGORIES + 1]
 
 
 def get_selected_question(board, selected_question_key) -> dict[str, str]:

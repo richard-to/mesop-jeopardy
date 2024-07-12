@@ -1,3 +1,4 @@
+import json
 import os
 
 import google.generativeai as genai
@@ -6,8 +7,37 @@ import google.generativeai as genai
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 genai.configure(api_key=GOOGLE_API_KEY)
-model = genai.GenerativeModel('gemini-pro')
 
+answer_check_model = genai.GenerativeModel('gemini-pro')
+question_gen_model = genai.GenerativeModel('gemini-1.5-flash', generation_config={
+  "temperature": 1,
+  "top_p": 0.95,
+  "top_k": 64,
+  "max_output_tokens": 8192,
+  "response_mime_type": "application/json",
+})
+
+
+_JEOPARDY_QUESTION_GENERATE_PROMPT = """
+Generate some good jeopardy questions to populate a full jeopardy game board. This means
+SIX unique categories.
+
+Each category should have EXACTLY FIVE questions of increasing difficulty.
+
+Output in JSON format like this:
+
+[
+  {
+    "category": "HISTORY",
+    "air_date": "2004-12-31",
+    "question": "'For the last 8 years of his life, Galileo was...",
+    "value": "$200",
+    "answer": "Copernicus",
+    "round": "Jeopardy!",
+    "show_number": "4680"
+  }
+]
+"""
 
 _JEOPARDY_PROMPT = """
 You are the host of Jeopardy.
@@ -38,10 +68,21 @@ def check_answer(clue: str, answer: str, response: str) -> list[bool, str]:
     bool: Whether the response to the clue was correct
     answer_response: Explanation on why the user's response was right/wrong
   """
-  response = model.generate_content(_JEOPARDY_PROMPT.format(
+  response = answer_check_model.generate_content(_JEOPARDY_PROMPT.format(
     clue=clue, question=answer, response=response)
   ).text
 
   if response.startswith("Yes. That is correct."):
     return True, response[len("Yes. That is correct."):]
   return False, response[len("No. That is incorrect."):]
+
+
+def generate_questions() -> list[dict[str, str]]:
+  """Generate Jeopardy questions using Gemini.
+
+  Returns:
+    Generated jeopardy data set in the expected format.
+  """
+  return json.loads(
+    question_gen_model.generate_content(_JEOPARDY_QUESTION_GENERATE_PROMPT).text
+  )
