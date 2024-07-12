@@ -44,7 +44,14 @@ def on_load(e: me.LoadEvent):
   yield
 
 
-@me.page(path="/", title="Mesop Jeopardy", on_load=on_load)
+@me.page(
+    path="/",
+    title="Mesop Jeopardy",
+    security_policy=me.SecurityPolicy(
+      allowed_iframe_parents=["https://huggingface.co"]
+    ),
+    on_load=on_load
+)
 def app():
   state = me.state(State)
   if state.loading:
