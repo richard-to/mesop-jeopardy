@@ -8,6 +8,7 @@ import mesop as me
 
 
 _NUM_CATEGORIES = 6
+_MAX_RETRIES = 3
 
 
 @me.stateclass
@@ -30,6 +31,8 @@ class State:
   modal_open: bool = False
   # App is loading
   loading: bool = True
+  # Means that we failed to load or generate the questions.
+  loading_failed: bool = False
 
 
 def on_load(e: me.LoadEvent):
@@ -37,9 +40,17 @@ def on_load(e: me.LoadEvent):
   state = me.state(State)
   state.loading = True
   yield
-  state.board = make_default_board(question_bank.load(
-    use_gemini=os.environ.get("GENERATE_JEOPARDY_QUESTIONS", "False") == "True"
-  ))
+
+  # Sometimes Gemini does not generate enough categories and questions.
+  num_retries = 0
+  while len(state.board) != _NUM_CATEGORIES:
+    if num_retries >= _MAX_RETRIES:
+      state.loading_failed = True
+    state.board = make_default_board(question_bank.load(
+      use_gemini=os.environ.get("GENERATE_JEOPARDY_QUESTIONS", "False") == "True"
+    ))
+    num_retries += 1
+
   state.loading = False
   yield
 
@@ -56,12 +67,19 @@ def app():
   state = me.state(State)
   if state.loading:
     with me.box(style=css.LOADING_PAGE):
-        me.progress_spinner()
-        me.text(
-          "Generating Jeopardy questions...",
-          style=me.Style(font_size=20, font_weight="bold", margin=me.Margin(left=10))
-        )
+      me.progress_spinner()
+      me.text(
+        "Generating Jeopardy questions...",
+        style=me.Style(font_size=20, font_weight="bold", margin=me.Margin(left=10))
+      )
     return
+
+  if state.loading_failed:
+    with me.box(style=css.LOADING_PAGE):
+      me.text(
+        "Failed to generate Jeopardy questions. Reload the browser and try again.",
+        style=me.Style(font_size=20, font_weight="bold", margin=me.Margin(left=10))
+      )
 
   # Modal is displayed to notify when the user is correct or not.
   with modal(state.modal_open):
@@ -215,7 +233,7 @@ def modal(modal_open: bool):
 def make_default_board(jeopardy_questions) -> list[list[dict[str, str]]]:
   """Creates a board with some random jeopardy questions."""
   random.shuffle(jeopardy_questions)
-  return jeopardy_questions[:_NUM_CATEGORIES + 1]
+  return jeopardy_questions[:_NUM_CATEGORIES]
 
 
 def get_selected_question(board, selected_question_key) -> dict[str, str]:

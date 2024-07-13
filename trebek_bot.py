@@ -8,21 +8,23 @@ GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 genai.configure(api_key=GOOGLE_API_KEY)
 
-answer_check_model = genai.GenerativeModel('gemini-pro')
-question_gen_model = genai.GenerativeModel('gemini-1.5-flash', generation_config={
+answer_check_model = genai.GenerativeModel('gemini-1.5-pro')
+question_gen_model = genai.GenerativeModel('gemini-1.5-pro', generation_config={
   "temperature": 1,
   "top_p": 0.95,
   "top_k": 64,
-  "max_output_tokens": 8192,
+  "max_output_tokens": 24576,
   "response_mime_type": "application/json",
 })
 
 
 _JEOPARDY_QUESTION_GENERATE_PROMPT = """
-Generate some good jeopardy questions to populate a full jeopardy game board. This means
-SIX unique categories.
+You are a Jeopdardy expert who specializes in crafting great questions.
 
-Each category should have EXACTLY FIVE questions of increasing difficulty.
+Generate *THIRTY* jeopardy questions to populate a full jeopardy game board.
+
+- This means *EXACTLY SIX* unique categories. This is VERY IMPORTANT.
+- Each category should have *EXACTLY FIVE* questions of increasing difficulty.
 
 Output in JSON format like this:
 
