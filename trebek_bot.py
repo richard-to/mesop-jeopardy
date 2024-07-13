@@ -13,7 +13,7 @@ question_gen_model = genai.GenerativeModel('gemini-1.5-flash', generation_config
   "temperature": 1,
   "top_p": 0.95,
   "top_k": 64,
-  "max_output_tokens": 24576,
+  "max_output_tokens": 16384,
   "response_mime_type": "application/json",
 })
 
@@ -21,26 +21,35 @@ question_gen_model = genai.GenerativeModel('gemini-1.5-flash', generation_config
 _JEOPARDY_QUESTION_GENERATE_PROMPT = """
 You are a Jeopardy! expert who specializes in crafting great questions.
 
-Generate Jeopardy! questions to populate a Jeopardy! game board.
+Generate Jeopardy! questions to populate a Jeopardy! board.
 
-A Jeopardy! board has 6 unique categories each with 5 questions of increasing
-difficulty.
+A Jeopardy! category has 5 questions of increasing difficulty.
 
-IT IS VERY IMPORTANT THAT YOU GENERATE 6 CATEGORIES AND NOT 5 CATEGORIES.
+A Jeopardy! board has 6 categories.
 
-Output in JSON format like this:
+Populate the categories in JSON Format using this template:
 
-[
-  {
-    "category": "HISTORY",
-    "air_date": "2004-12-31",
-    "question": "'For the last 8 years of his life, Galileo was...",
-    "value": "$200",
-    "answer": "Copernicus",
-    "round": "Jeopardy!",
-    "show_number": "4680"
-  }
+```
+{
+  "CATEGORY 1": [
+   {
+      "question": "'Question 1",
+      "value": "$200",
+      "answer": "Answer 1"
+    },
+    {
+      "question": "'Question 2",
+      "value": "$400",
+      "answer": "Answer 2"
+    },
+  ],
+  "CATEGORY 2": [],
+  "CATEGORY 3": [],
+  "CATEGORY 4": [],
+  "CATEGORY 5": [],
+  "CATEGORY 6": [],
 ]
+```
 """
 
 _JEOPARDY_PROMPT = """
@@ -87,6 +96,19 @@ def generate_questions() -> list[dict[str, str]]:
   Returns:
     Generated jeopardy data set in the expected format.
   """
-  return json.loads(
+  question_sets = json.loads(
     question_gen_model.generate_content(_JEOPARDY_QUESTION_GENERATE_PROMPT).text
   )
+  questions_list = []
+  # Format the questions like the data set.
+  for category, questions in question_sets.items():
+    for question in questions:
+      questions_list.append(
+        {
+          "category": category,
+          "air_date": "2024-1-1",
+          "show_number": "0",
+          **question
+        }
+      )
+  return questions_list

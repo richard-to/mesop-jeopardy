@@ -33,33 +33,9 @@ class State:
   answered_questions: dict[str, bool]
   modal_open: bool = False
   # App is loading
-  loading: bool = True
+  loading: bool = False
   # Means that we failed to load or generate the questions.
   loading_failed: bool = False
-
-
-def on_load(e: me.LoadEvent):
-  """Generating the questions from Gemini takes some time, so add a loading screen."""
-  state = me.state(State)
-  state.loading = True
-  yield
-
-  # Sometimes Gemini does not generate enough categories and questions.
-  num_retries = 0
-  while len(state.board) != _NUM_CATEGORIES:
-    if num_retries >= _MAX_RETRIES:
-      state.loading_failed = True
-      break
-    try:
-      state.board = make_default_board(question_bank.load(
-        use_gemini=os.environ.get("GENERATE_JEOPARDY_QUESTIONS", "false").lower() == "true"
-      ))
-    except json.JSONDecodeError:
-      logging.warning("Gemini failed to generate valid JSON.")
-    num_retries += 1
-
-  state.loading = False
-  yield
 
 
 @me.page(
@@ -68,10 +44,10 @@ def on_load(e: me.LoadEvent):
     security_policy=me.SecurityPolicy(
       allowed_iframe_parents=["https://huggingface.co"]
     ),
-    on_load=on_load
 )
 def app():
   state = me.state(State)
+
   if state.loading:
     with me.box(style=css.LOADING_PAGE):
       me.progress_spinner()
@@ -84,9 +60,23 @@ def app():
   if state.loading_failed:
     with me.box(style=css.LOADING_PAGE):
       me.text(
-        "Failed to generate Jeopardy questions. Reload the browser and try again.",
-        style=me.Style(font_size=20, font_weight="bold", margin=me.Margin(left=10))
+        "Failed to generate Jeopardy questions.",
+        style=me.Style(font_size=20, font_weight="bold", margin=me.Margin(right=15))
       )
+      me.button(
+        "Try Again",
+        type="raised",
+        style=me.Style(background=css.COLOR_YELLOW, color="#000"),
+        on_click=on_generate_questions)
+    return
+
+  if not state.board:
+    with me.box(style=css.LOADING_PAGE):
+      me.button(
+        "Start Game",
+        type="raised",
+        style=me.Style(font_size=30, padding=me.Padding.all("30px"), background=css.COLOR_YELLOW, color="#000"),
+        on_click=on_generate_questions)
     return
 
   # Modal is displayed to notify when the user is correct or not.
@@ -158,6 +148,28 @@ def app():
           style=css.response_button(disabled),
           on_click=on_click_submit,
         )
+
+
+def on_generate_questions(e: me.ClickEvent):
+  state = me.state(State)
+  state.loading_failed = False
+  state.loading = True
+  yield
+
+  try:
+    state.board = make_default_board(question_bank.load(
+      use_gemini=os.environ.get("GENERATE_JEOPARDY_QUESTIONS", "false").lower() == "true"
+    ))
+  except json.JSONDecodeError:
+    logging.warning("Gemini failed to generate valid JSON.")
+
+  # Sometimes Gemini does not generate enough categories and questions.
+  if len(state.board) != _NUM_CATEGORIES:
+    state.loading_failed = True
+    state.board = []
+
+  state.loading = False
+  yield
 
 
 def on_click_cell(e: me.ClickEvent):
