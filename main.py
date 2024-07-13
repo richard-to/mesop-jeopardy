@@ -80,6 +80,7 @@ def app():
         "Failed to generate Jeopardy questions. Reload the browser and try again.",
         style=me.Style(font_size=20, font_weight="bold", margin=me.Margin(left=10))
       )
+    return
 
   # Modal is displayed to notify when the user is correct or not.
   with modal(state.modal_open):
