@@ -1,6 +1,9 @@
+import json
+import logging
 import os
 import random
 import time
+
 import css
 import trebek_bot
 import question_bank
@@ -46,9 +49,13 @@ def on_load(e: me.LoadEvent):
   while len(state.board) != _NUM_CATEGORIES:
     if num_retries >= _MAX_RETRIES:
       state.loading_failed = True
-    state.board = make_default_board(question_bank.load(
-      use_gemini=os.environ.get("GENERATE_JEOPARDY_QUESTIONS", "False") == "True"
-    ))
+      break
+    try:
+      state.board = make_default_board(question_bank.load(
+        use_gemini=os.environ.get("GENERATE_JEOPARDY_QUESTIONS", "False").lower() == "True"
+      ))
+    except json.JSONDecodeError:
+      logging.warning("Gemini failed to generate valid JSON.")
     num_retries += 1
 
   state.loading = False
