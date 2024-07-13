@@ -48,7 +48,7 @@ Populate the categories in JSON Format using this template:
   "CATEGORY 4": [],
   "CATEGORY 5": [],
   "CATEGORY 6": [],
-]
+}
 ```
 """
 
