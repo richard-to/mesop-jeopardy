@@ -22,6 +22,8 @@ pip install -r requirements.txt
 GOOGLE_API_KEY=<your-api-key> mesop main.py
 ```
 
+You can try out a demo here on [Hugging Face Spaces](https://huggingface.co/spaces/richard-to/mesop-jeopardy).
+
 ## Notes on the Jeopardy questions dataset
 
 One thing to note is I haven't included the jeopardy.json file. I'm using an old dataset
