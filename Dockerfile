@@ -32,4 +32,4 @@ WORKDIR /srv/mesop-jeopardy
 
 # Run Mesop through gunicorn. Should be available at localhost:7860
 # We use 7860 since that's what Hugging Faces expects.
-CMD ["gunicorn", "--bind", "0.0.0.0:7860", "main:me"]
+CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--timeout", "60", "main:me"]
