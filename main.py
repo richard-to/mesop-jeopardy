@@ -52,7 +52,7 @@ def on_load(e: me.LoadEvent):
       break
     try:
       state.board = make_default_board(question_bank.load(
-        use_gemini=os.environ.get("GENERATE_JEOPARDY_QUESTIONS", "False").lower() == "True"
+        use_gemini=os.environ.get("GENERATE_JEOPARDY_QUESTIONS", "false").lower() == "true"
       ))
     except json.JSONDecodeError:
       logging.warning("Gemini failed to generate valid JSON.")
